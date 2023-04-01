@@ -34,17 +34,25 @@ function calculationStep4(value: number) {
   return Math.LN10 * valueRoot;
 }
 
-const Option = <T>(input: T) => ({
-  chain: <D>(fn: (arg: NonNullable<T>) => D) =>
-    input == null ? null : fn(input),
+interface OptionInstance<T> {
+  chain: <D>(fn: (arg: NonNullable<T>) => D) => D | null;
+  map: <D>(fn: (arg: NonNullable<T>) => D) => OptionInstance<D | null>;
+}
+
+const Option = <T>(value: T): OptionInstance<T> => ({
+  chain: (fn) => (value == null ? null : fn(value)),
+  map: (fn) => {
+    const nextValue = Option(value).chain(fn);
+    return Option(nextValue);
+  },
 });
 
-const calculate = (input?: number) => {
+const calculate = (input?: number): number | null => {
   return Option(input)
-    .chain((data) => Option(calculationStep1(data)))
-    ?.chain((data) => Option(calculationStep2(data)))
-    ?.chain((data) => Option(calculationStep3(data)))
-    ?.chain(calculationStep4);
+    .map(calculationStep1)
+    .map(calculationStep2)
+    .map(calculationStep3)
+    .chain(calculationStep4);
 };
 
-export const optionStep1 = calculate;
+export const option2 = calculate;

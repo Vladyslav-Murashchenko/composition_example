@@ -34,21 +34,18 @@ function calculationStep4(value: number) {
   return Math.LN10 * valueRoot;
 }
 
-const Option = <T>(value: T) => ({
+const Option = <T>(input: T) => ({
   chain: <D>(fn: (arg: NonNullable<T>) => D) =>
-    value == null ? null : fn(value),
-  map: <D>(fn: (arg: NonNullable<T>) => D) => {
-    const nextValue = Option(value).chain(fn);
-    return Option(nextValue);
-  },
+    input == null ? null : fn(input),
 });
 
 const calculate = (input?: number): number | null => {
-  return Option(input)
-    .map(calculationStep1)
-    .map(calculationStep2)
-    .map(calculationStep3)
-    .chain(calculationStep4);
+  const res1 = Option(input).chain(calculationStep1);
+  const res2 = Option(res1).chain(calculationStep2);
+  const res3 = Option(res2).chain(calculationStep3);
+  const res4 = Option(res3).chain(calculationStep4);
+
+  return res4;
 };
 
-export const option = calculate;
+export const simpleMonad = calculate;

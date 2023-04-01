@@ -2,42 +2,47 @@ import { manyNullChecks } from "./manyNullChecks";
 import { simpleComposition } from "./simpleComposition";
 import { throwErrors } from "./throwErrors";
 import { option } from "./option";
-import { optionStep1 } from "./optionStep1";
+import { simpleMonad } from "./simpleMonad";
+import { HOF } from "./HOF";
+import { anotherFlowWithOption } from "./anotherFlowWithOption";
 
 import "./style.css";
 
 const inputs = [10, 20, 30, 5, -4, -8, 0];
 const fnByFileName = {
-  simpleComposition,
+  anotherFlowWithOption,
+  HOF,
   manyNullChecks,
-  throwErrors,
-  optionStep1,
   option,
+  simpleComposition,
+  simpleMonad,
+  throwErrors,
 };
+const fileNameFnPairs = Object.entries(fnByFileName);
+
+const tableData = inputs.flatMap((input) =>
+  fileNameFnPairs.map(([fileName, fn]) => [input, fileName, fn(input)] as const)
+);
 
 const concat = (a: string, b: string) => a + b;
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
-  <h1>"program" function was called from different files</h2>
+  <h1>"calculate" function was called from different files</h2>
   <table>
     <tr>
       <th>Input</th>
       <th>File name</th>
       <th>Output</th>
     </tr>
-    ${inputs
-      .map((input) =>
-        Object.entries(fnByFileName)
-          .map(([fileName, fn]) =>
-            "".concat(
-              `<tr>`,
-              `<td>${input}</td>`,
-              `<td>${fileName}</td>`,
-              `<td>${fn(input)}</td>`,
-              `</tr>`
-            )
-          )
-          .reduce(concat)
+    ${tableData
+      .map(([input, fileName, output]) =>
+        "".concat(
+          `<tr>`,
+          `<td>${input}</td>`,
+          `<td>${fileName}</td>`,
+          `<td>${output}</td>`,
+          `</tr>`
+        )
       )
       .reduce(concat)}
   </table>

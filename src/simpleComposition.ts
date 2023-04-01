@@ -14,7 +14,7 @@ function step4(value: number) {
   return Math.LN10 * value ** (1 / 4);
 }
 
-const calculate = (input: number) => {
+const calculate = (input: number): number => {
   const res2 = step2(step1(input));
   const res4 = step4(step3(res2));
 

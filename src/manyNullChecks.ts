@@ -34,7 +34,7 @@ function step4(value: number) {
   return Math.LN10 * valueRoot;
 }
 
-const calculate = (input?: number) => {
+const calculate = (input?: number): number | null => {
   if (input == undefined) {
     return null;
   }
